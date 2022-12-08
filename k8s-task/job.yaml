@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+ name: loadtest
+ namespace: frontend
+spec:
+ template:
+   spec:
+     containers:
+     - name: siege
+       image: schoolofdevops/loadtest:v1
+       command: ["siege",  "--concurrent=5", "--benchmark", "--time=10m", "http://<LOADBALANCER_IP>:5000"]
+     restartPolicy: Never
+ backoffLimit: 4

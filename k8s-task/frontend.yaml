@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: frontend
+ namespace: frontend
+spec:
+ selector:
+   matchLabels:
+     app: frontend
+ replicas: 1
+ template:
+   metadata:
+     labels:
+       app: frontend
+   spec:
+     containers:
+     - name: frontend-app
+       image: teamcloudyuga/rsvpapp
+       env:
+       - name: MONGODB_HOST
+         value: mongodb.backend:27017
+       ports:
+       - containerPort: 5000
+         name: web-port
+       resources:
+         limits:
+           cpu: 500m
+         requests:
+           cpu: 200m
+---
+apiVersion: v1
+kind: Service
+metadata:
+ name: frontend
+ namespace: frontend
+ labels:
+   apps: frontend
+spec:
+ type: LoadBalancer
+ ports:
+ - name: tcp-31081-5000
+   port: 5000
+   protocol: TCP
+ selector:
+   app: frontend
